@@ -37,7 +37,7 @@ module ShareASale
 
     def url
       params = [['merchantId', merchant_id], ['token', token], ['version', SHARE_A_SALE_VERSION], ['action', action], ['date', date.strftime("%D")]] + options.to_a
-      URI::HTTPS.build(host: SHARE_A_SALE_HOST, path: SHARE_A_SALE_PATH, query: URI.encode_www_form(params).gsub("%2F", "/")).to_s
+      URI::HTTPS.build(host: SHARE_A_SALE_HOST, path: SHARE_A_SALE_PATH, query: URI.encode_www_form(params)).to_s
     end
 
     def custom_headers
