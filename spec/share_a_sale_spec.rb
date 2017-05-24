@@ -37,7 +37,7 @@ describe ShareASale::Request do
 
     specify do
       expect(subject.url).to eq(
-        "https://shareasale.com/w.cfm?merchantId=1234&token=NGc6dg5e9URups5o&version=1.8&action=bannerList&date=04/14/11&param=value"
+        "https://api.shareasale.com/w.cfm?merchantId=1234&token=NGc6dg5e9URups5o&version=2.8&action=bannerList&date=04/14/11&param=value"
       )
     end
 

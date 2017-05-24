@@ -4,9 +4,6 @@ require 'uri'
 require 'rest-client'
 
 module ShareASale
-  SHARE_A_SALE_HOST = "shareasale.com"
-  SHARE_A_SALE_PATH = "/w.cfm"
-  SHARE_A_SALE_VERSION = "1.8"
 
   class Client < Struct.new(:merchant_id, :token, :api_secret)
     { banner_list: "bannerList", transaction_detail: "transactionDetail", reference: "reference" }.each do |method, api_action|
@@ -20,6 +17,7 @@ module ShareASale
     def request(action, options, date = Time.now.utc)
       Request.new(merchant_id, token, api_secret, action, options, date)
     end
+
   end
 
   class Request < Struct.new(:merchant_id, :token, :api_secret, :action, :options, :date)
@@ -39,14 +37,14 @@ module ShareASale
       params = [
         ['merchantId', merchant_id],
         ['token', token],
-        ['version', SHARE_A_SALE_VERSION],
+        ['version', version],
         ['action', action],
         ['date', date.strftime("%D")]
       ] + options.to_a
 
       URI::HTTPS.build(
-        host: SHARE_A_SALE_HOST,
-        path: SHARE_A_SALE_PATH,
+        host:  host,
+        path:  path,
         query: params.map{|p| p.join('=') }.join('&')
       ).to_s
     end
@@ -60,6 +58,20 @@ module ShareASale
 
     def execute!
       RestClient.get(url, custom_headers)
+    end
+
+  protected
+
+    def host
+      ENV.fetch('SHAREASALE_HOST', 'api.shareasale.com')
+    end
+
+    def path
+      ENV.fetch('SHAREASALE_PATH', '/w.cfm')
+    end
+
+    def version
+      ENV.fetch('SHAREASALE_VERSION', '2.8')
     end
   end
 end
