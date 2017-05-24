@@ -1,45 +1,23 @@
 require 'share_a_sale'
 
-describe ShareASale::Request do
-  context "API metadata" do
+describe ShareASale do
 
-    let(:client) do
-      ShareASale::Client.new(
-        1234,
-        'NGc6dg5e9URups5o',
-        'ATj7vd8b7CCjeq9yQUo8cc2w3OThqe2e'
-      )
+  describe '.client' do
+    context 'without credentials in ENV' do
+      it 'raises an error' do
+        expect { ShareASale.client }.to raise_error(KeyError)
+      end
     end
 
-    subject do
-      client.request(
-        'bannerList',
-        { param: 'value' },
-        Time.gm(2011, 04, 14, 22, 44, 22)
-      )
-    end
+    context 'with credentials in ENV' do
+      it 'returns an instance of ShareASale::Client' do
+        ENV['SHAREASALE_MERCH_ID'] = '123'
+        ENV['SHAREASALE_API_TOKEN'] = 'foo'
+        ENV['SHAREASALE_API_SECRET'] = 'bar'
 
-    specify do
-      expect(subject.date_string).to eq("Thu, 14 Apr 2011 22:44:22 GMT")
+        expect(ShareASale.client).to be_instance_of(ShareASale::Client)
+      end
     end
-
-    specify do
-      expect(subject.string_to_hash).to eq(
-        "NGc6dg5e9URups5o:Thu, 14 Apr 2011 22:44:22 GMT:bannerList:ATj7vd8b7CCjeq9yQUo8cc2w3OThqe2e"
-      )
-    end
-
-    specify do
-      expect(subject.authentication_hash).to eq(
-        "78D54A3051AE0AAAF022AA2DA230B97D5219D82183FEFF71E2D53DEC6057D9F1"
-      )
-    end
-
-    specify do
-      expect(subject.url).to eq(
-        "https://api.shareasale.com/w.cfm?merchantId=1234&token=NGc6dg5e9URups5o&version=2.8&action=bannerList&date=04/14/11&param=value"
-      )
-    end
-
   end
+
 end
